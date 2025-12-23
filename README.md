@@ -33,7 +33,7 @@ T2D_subtype_analysis/
 
 1.  **Clone the repository:**
     ```bash
-    git clone [[repository-url]](https://github.com/jjoonnL/T2D.git)
+    git clone https://github.com/jjoonnL/T2D.git
     cd T2D_subtype_analysis
     ```
 
