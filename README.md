@@ -34,7 +34,7 @@ T2D_subtype_analysis/
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/jjoonnL/T2D.git
-    cd T2D_subtype_analysis
+    cd T2D
     ```
 
 2.  **Create and activate a Conda environment (recommended):**
