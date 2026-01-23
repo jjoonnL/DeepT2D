@@ -39,8 +39,8 @@ DeepT2D/
 
 2.  **Create and activate a Conda environment (recommended):**
     ```bash
-    conda create -n t2d_analysis python=3.12
-    conda activate t2d_analysis
+    conda create -n deept2d python=3.12
+    conda activate deept2d
     ```
 
 3.  **Install the required packages:**
