@@ -57,7 +57,7 @@ The entire analysis pipeline is organized into Jupyter notebooks within the `not
 
 ### Using the Sample Data
 
-This repository includes a small, anonymized sample dataset located in `data/sample_data/`. The sample data are provided to validate that the pipeline runs end-to-end and to demonstrate the expected input/output formats.
+This repository includes a synthetic sample dataset located in `data/sample_data/`. The sample data are provided to validate that the pipeline runs end-to-end and to demonstrate the expected input/output formats.
 
 The sample data are not intended to reproduce the numerical results or figures reported in the paper and should not be used for clinical interpretation.
 
