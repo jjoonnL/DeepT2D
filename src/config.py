@@ -29,12 +29,11 @@ CLINICAL_PATH = DATA_DIR / "sample_data/clinical.csv"
 # -------------------------------------------------------------------
 # OPTION 2: USE YOUR OWN DATA (CUSTOM)
 # -------------------------------------------------------------------
-# To use your own dataset, uncomment the lines below and update the paths
-# to point to your specific raw data files.
-# GENOTYPE_PATH = "your_genotype_file_path"
-# PROTEOME_PATH = "your_proteome_file_path"
-# METABOLITE_PATH = "your_metabolite_file_path"
-# CLINICAL_PATH = "your_clinical_file_path"
+# To use your own dataset, uncomment the lines below and update these paths to point to your files.
+# GENOTYPE_PATH = RAW_DATA_DIR / "your_genotype_file.csv"
+# PROTEOME_PATH = RAW_DATA_DIR / "your_proteome_file.csv"
+# METABOLITE_PATH = RAW_DATA_DIR / "your_metabolite_file.csv"
+# CLINICAL_PATH = RAW_DATA_DIR / "your_clinical_file.csv"
 
 # ===================================================================
 #  OUTPUT PATHS
