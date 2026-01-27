@@ -31,10 +31,10 @@ CLINICAL_PATH = DATA_DIR / "sample_data/clinical.csv"
 # -------------------------------------------------------------------
 # To use your own dataset, uncomment the lines below and update the paths
 # to point to your specific raw data files.
-GENOTYPE_PATH = "/data02/jaejoon/SUBCLUSTERING/data_preprocessing/genotype/matrix/KFDA/KFDA_matrix_flipped.raw"
-PROTEOME_PATH = "/data02/jaejoon/SUBCLUSTERING/data_preprocessing/proteome/kfda_proteome_cardiometabolic.txt"
-METABOLITE_PATH = "/data02/jaejoon/SUBCLUSTERING/data_preprocessing/metabolite/kfda_targeted_metabolite_filtered_exclude_xeno.txt"
-CLINICAL_PATH = "/data02/jaejoon/SUBCLUSTERING/data_preprocessing/clinical/kfda_clinical_df.txt"
+# GENOTYPE_PATH = "your_genotype_file_path"
+# PROTEOME_PATH = "your_proteome_file_path"
+# METABOLITE_PATH = "your_metabolite_file_path"
+# CLINICAL_PATH = "your_clinical_file_path"
 
 # ===================================================================
 #  OUTPUT PATHS
