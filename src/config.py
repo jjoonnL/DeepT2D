@@ -46,6 +46,8 @@ CLINICAL_TARGETS = [
 
 OUTER_SPLITS = 10
 OUTER_RANDOM_STATE = 42
+INNER_SPLITS = 5
+INNER_RANDOM_STATE = 42
 
 # -------------------------------------------------------------------
 # OPTION 2: USE YOUR OWN DATA (CUSTOM)
@@ -86,6 +88,9 @@ WEIGHT_DECAY = 1e-4
 
 # --- Training Parameters ---
 EPOCHS = 50
+MAX_EPOCHS = 300
+EARLY_STOPPING_PATIENCE = 10
+EARLY_STOPPING_MIN_DELTA = 1e-6
 LEARNING_RATE = 0.01
 SCHEDULER_STEP_SIZE = 5
 SCHEDULER_GAMMA = 0.9
@@ -93,3 +98,9 @@ BATCH_SIZE = 64
 RANDOM_STATE = 214
 NUM_RUNS = 100 # Total training iterations with different random seeds
 NUM_CLUSTERS = 4
+
+PARAM_GRID = {
+    "decoder_dim": [[], [32], [64]],
+    "dropout": [0.1, 0.2, 0.3],
+    "weight_decay": [1e-4, 1e-3, 1e-2],
+}
