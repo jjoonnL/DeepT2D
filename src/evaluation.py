@@ -8,6 +8,7 @@ from sklearn.metrics import (
     confusion_matrix,
     normalized_mutual_info_score,
     precision_recall_fscore_support,
+    silhouette_score,
 )
 
 
@@ -32,7 +33,7 @@ def apply_cluster_mapping(clusters, mapping):
 
 
 def calculate_metrics(true_labels, raw_clusters, mapped_predictions,
-                      cluster_labels):
+                      cluster_labels, latent=None):
     precision, recall, f1, support = precision_recall_fscore_support(
         true_labels,
         mapped_predictions,
@@ -51,6 +52,12 @@ def calculate_metrics(true_labels, raw_clusters, mapped_predictions,
         "macro_recall": float(np.mean(recall)),
         "macro_f1": float(np.mean(f1)),
     }
+    if latent is not None:
+        overall["silhouette"] = (
+            silhouette_score(latent, raw_clusters)
+            if 1 < len(np.unique(raw_clusters)) < len(raw_clusters)
+            else np.nan
+        )
     class_rows = [
         {
             "class_label": int(label),
