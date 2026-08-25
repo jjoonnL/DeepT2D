@@ -26,6 +26,27 @@ PROTEOME_PATH = DATA_DIR / "sample_data/proteome.csv"
 METABOLITE_PATH = DATA_DIR / "sample_data/metabolite.csv"
 CLINICAL_PATH = DATA_DIR / "sample_data/clinical.csv"
 
+# Input schema
+GENOTYPE_ID_COLUMN = "IID"
+OMICS_ID_COLUMN = "id"
+CLINICAL_ID_COLUMN = "id"
+SEX_COLUMN = "sex"
+
+GENOTYPE_METADATA_COLUMNS = [
+    "FID", "IID", "PAT", "MAT", "SEX", "PHENOTYPE"
+]
+
+CLINICAL_TARGETS = [
+    "bmi",
+    "hba1c",
+    "age_at_diagnosis",
+    "HOMA_B",
+    "HOMA_IR",
+]
+
+OUTER_SPLITS = 10
+OUTER_RANDOM_STATE = 42
+
 # -------------------------------------------------------------------
 # OPTION 2: USE YOUR OWN DATA (CUSTOM)
 # -------------------------------------------------------------------
@@ -41,6 +62,9 @@ CLINICAL_PATH = DATA_DIR / "sample_data/clinical.csv"
 # Configure directories to save model weights and figures.
 OUTPUT_DIR = BASE_DIR / "outputs"
 MODEL_SAVE_DIR = OUTPUT_DIR / "models"
+
+PROCESSED_DATA_PATH = PROCESSED_DATA_DIR / "processed_dataset.pt"
+PARTICIPANT_MANIFEST_PATH = PROCESSED_DATA_DIR / "participant_manifest.csv"
 
 # ===================================================================
 #  MODEL HYPERPARAMETERS

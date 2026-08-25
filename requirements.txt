@@ -7,3 +7,4 @@ tqdm>=4.67.1
 captum>=0.7.0
 statsmodels>=0.14.4
 jupyter>=1.1.1
+pytest>=8.0.0
