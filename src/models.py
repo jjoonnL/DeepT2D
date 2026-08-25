@@ -94,3 +94,46 @@ def build_mic(input_dims, params, config_module):
         cluster_num=config_module.NUM_CLUSTERS,
         dropout=float(params["dropout"]),
     )
+
+
+class MICSingle(nn.Module):
+    def __init__(self, input_dim, params, latent_dim=16, clinical_dim=5,
+                 cluster_num=4):
+        super().__init__()
+        dropout = float(params["dropout"])
+        # Preserve the finalized single-omics architecture, including the
+        # additional 16-to-16 encoder layer before the latent representation.
+        encoder_dims = [input_dim, 128, 32, 16, latent_dim]
+        encoder_layers = []
+        for in_dim, out_dim in zip(encoder_dims[:-1], encoder_dims[1:]):
+            encoder_layers.extend([
+                nn.Linear(in_dim, out_dim),
+                nn.BatchNorm1d(out_dim),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+            ])
+        self.encoder = nn.Sequential(*encoder_layers)
+
+        decoder_dims = [latent_dim] + list(params["decoder_dim"]) + [clinical_dim]
+        decoder_layers = []
+        for index, (in_dim, out_dim) in enumerate(
+            zip(decoder_dims[:-1], decoder_dims[1:])
+        ):
+            decoder_layers.append(nn.Linear(in_dim, out_dim))
+            if index < len(decoder_dims) - 2:
+                decoder_layers.append(nn.ReLU())
+        self.decoder = nn.Sequential(*decoder_layers)
+        self.centroid = nn.Parameter(torch.randn(cluster_num, latent_dim) * 0.01)
+        self.apply(self._init_weight)
+
+    def encode(self, inputs):
+        return self.encoder(inputs)
+
+    def forward(self, inputs):
+        return self.decoder(self.encode(inputs))
+
+    @staticmethod
+    def _init_weight(layer):
+        if isinstance(layer, nn.Linear):
+            nn.init.orthogonal_(layer.weight)
+            nn.init.constant_(layer.bias, 0.0)
