@@ -1,114 +1,82 @@
-# Bridging omics to phenotypes: a deep learning framework to characterize the molecular basis of type 2 diabetes subtypes
+# Bridging omics to phenotypes
 
-This repository contains the official source code and sample data for the paper "Bridging omics to phenotypes: a deep learning framework to characterize the molecular basis of type 2 diabetes subtypes".
+Code accompanying **“Bridging omics to phenotypes: a deep learning framework to characterize multi-omics patterns associated with type 2 diabetes subtypes.”**
 
-## Project Structure
+The repository contains the model, validation, comparator, and feature-attribution workflows used in the revised analysis. Synthetic data are included to demonstrate the required input format and to verify code execution. They do not reproduce the study results and must not be used for clinical interpretation.
 
-```
+## Repository structure
+
+```text
 DeepT2D/
-├── README.md                 <- The file you are reading
-├── notebooks/                <- Contains the analysis pipeline as Jupyter notebooks.
+├── data/
+│   ├── sample_data/          synthetic input data
+│   ├── raw/                  user-provided data (not tracked)
+│   └── processed/            generated tensors and manifests (not tracked)
+├── notebooks/
 │   ├── 01_data_preprocessing.ipynb
 │   ├── 02_hyperparameter_tuning.ipynb
 │   ├── 03_model_training.ipynb
 │   ├── 04_nested_cross_validation.ipynb
-│   ├── 05_evaluation_and_labeling.ipynb
-│   ├── 06_feature_analysis.ipynb
-├── src/                      <- Contains modularized Python source code.
-│   ├── config.py             # Stores all configurations, paths, and hyperparameters.
-│   ├── models.py             # Defines models.
-│   └── utils.py              # Contains helper functions for training, evaluation, etc.
-├── data/                     <- Directory for all data.
-│   ├── sample_data/          # Contains anonymized sample data to run the pipeline.
-│   └── processed/            # Processed, model-ready data will be saved here.
-├── outputs/                  <- Directory for all outputs.
-│   ├── models/               # Saved model weights (.pth) are stored here.
-│   └── ...                   # Other outputs like results CSVs are saved here.
-└── requirements.txt          <- Lists all Python package dependencies.
+│   ├── 05_model_comparison.ipynb
+│   ├── 06_evaluation_and_labeling.ipynb
+│   ├── 07_feature_attribution.ipynb
+│   └── 08_clinical_association.ipynb
+├── src/                      reusable analysis code
+├── tests/                    preprocessing and model checks
+├── outputs/                  generated results (not tracked)
+└── requirements.txt
 ```
 
-## Setup
+## Installation
 
-### Installation
+Python 3.12 was used for the revision analysis. Install PyTorch for the relevant CPU/CUDA platform first, then install the remaining packages.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/jjoonnL/DeepT2D.git
-    cd DeepT2D
-    ```
+```bash
+git clone https://github.com/jjoonnL/DeepT2D.git
+cd DeepT2D
+conda create -n deept2d python=3.12
+conda activate deept2d
+pip install -r requirements.txt
+```
 
-2.  **Create and activate a Conda environment (recommended):**
-    ```bash
-    conda create -n deept2d python=3.12
-    conda activate deept2d
-    ```
+MOFA requires `mofapy2==0.7.4`. On systems where `h5py` cannot be built with the system compiler, installing compatible NumPy and h5py binaries through conda before `pip install -r requirements.txt` is recommended.
 
-3.  **Install the required packages:**
+## Input data
 
-    **Note:** Please install [PyTorch](https://pytorch.org/get-started/locally/) according to your compute platform (CUDA version) before installing other dependencies.
-    
-    ```bash
-    pip install -r requirements.txt
-    ```
+Four participant-level tables are required:
 
-## How to Run the Analysis
+- genotype: one ID column and variant columns;
+- proteome: one ID column and protein columns;
+- metabolite: one ID column and metabolite columns;
+- clinical: ID, sex, BMI, HbA1c, age at diagnosis, HOMA2-B, and HOMA2-IR.
 
-The entire analysis pipeline is organized into Jupyter notebooks within the `notebooks/` directory. They are numbered and should be run sequentially.
+IDs must be unique within each table. Notebook 01 retains participants present in all four tables, removes genotype features with zero variance in either sex, applies sex-specific cohort-level scaling, generates the clinical benchmark clusters, and saves fixed outer-fold assignments. Input paths and column names are defined in `src/config.py`.
 
-### Using the Sample Data
+## Analysis order
 
-This repository includes a synthetic sample dataset located in `data/sample_data/`. The sample data are provided to validate that the pipeline runs end-to-end and to demonstrate the expected input/output formats.
+1. `01_data_preprocessing.ipynb` aligns and preprocesses the four data sources.
+2. `02_hyperparameter_tuning.ipynb` provides a single-outer-fold tuning interface. The final tuning is nested inside Notebook 04.
+3. `03_model_training.ipynb` trains the repeated full-cohort models used for stable labeling.
+4. `04_nested_cross_validation.ipynb` runs the 10-fold outer/5-fold inner generalization analysis. Hyperparameters, training epochs, k-means centroids, and cluster mappings are determined from outer-training participants only.
+5. `05_model_comparison.ipynb` evaluates single-omics models, PCA + k-means, MOFA with 16 factors + k-means, and Elastic Net using the same outer folds.
+6. `06_evaluation_and_labeling.ipynb` evaluates the explicitly recorded full-cohort model runs and derives majority-vote subtype labels.
+7. `07_feature_attribution.ipynb` performs full-cohort and held-out Integrated Gradients analyses. Positive feature sums are primary; absolute attribution rankings are retained as a sensitivity analysis.
+8. `08_clinical_association.ipynb` contains the included-versus-excluded comparison and adjusted complication models. Private clinical input files are required.
 
-The sample data are not intended to reproduce the numerical results or figures reported in the paper and should not be used for clinical interpretation.
+Long-running cells are disabled by default. Set the corresponding `RUN_*` flag only after reviewing the paths and active environment.
 
-By default, the configuration in `src/config.py` is set up to use this sample data. No changes are needed to run the pipeline out-of-the-box.
+## Validation design
 
-### Execution Order
+The final generalization pipeline uses 10 outer folds and 5 inner folds. Inner folds select the reconstruction model hyperparameters and training epoch. The model is then refitted using all outer-training participants. K-means centroids and the cluster-to-subtype mapping are also fitted using outer-training participants, after which held-out participants are assigned to the fixed centroids.
 
-1.  **`01_data_preprocessing.ipynb`**:
-    *   **Action:** Loads, normalizes, and filters the sample data.
-    *   **Output:** A single `processed_dataset.pt` file in `data/processed/`.
+All reported single-omics and comparator analyses reuse the same outer-fold assignments. Elastic Net is a supervised predictive benchmark; PCA and MOFA are unsupervised representation-learning comparators followed by k-means.
 
-2.  **`02_hyperparameter_tuning.ipynb`**:
-    *   **Action:** Performs a grid search with cross-validation to find the optimal model hyperparameters.
-    *   **Output:** `hyperparameter_tuning_results.csv` in `outputs/`.
+## Reproducibility and data privacy
 
-3.  **`03_model_training.ipynb`**:
-    *   **Action:** Trains the model for 100 independent runs using the best hyperparameters found in `src/config.py`.
-    *   **Output:** 100 trained model weight files (`.pth`) in `outputs/models/`.
+Generated tensors, participant manifests, participant-level predictions, attribution matrices, checkpoints, and private clinical data are excluded from version control. The tracked sample data are synthetic. Manuscript figure-layout code is maintained separately from this analysis repository.
 
-4.  **`04_nested_cross_validation.ipynb`**:
-    *   **Action:** Evaluates the model's generalization performance using a robust nested cross-validation scheme.
-    *   **Output:** `nested_cv_results.csv` and benchmark comparison files in `outputs/`.
+Run the local checks with:
 
-5.  **`05_evaluation_and_labeling.ipynb`**:
-    *   **Action:** Evaluates all 100 trained models and assigns a final, stable subtype label to each sample via majority vote.
-    *   **Output:** `final_clinical_data_with_labels.csv` in `data/processed/`.
-
-6.  **`06_feature_analysis.ipynb`**:
-    *   **Action:** Performs feature importance analysis using Integrated Gradients to identify key molecular drivers for each subtype.
-    *   **Output:** Analysis results and visualizations within the notebook.
-
-### Using Your Own Data
-
-**Note:** Your input data files must follow the same format and column structure as the provided sample data (see `data/sample_data/`). Ensure that the Sample IDs are consistent across all omics and clinical files.
-1.  Place your raw data files in a directory of your choice (e.g., `data/raw/`).
-2.  Open `src/config.py`.
-3.  Update the file paths in the `DATA PATHS` section to point to your data files.
-
-    ```python
-    # src/config.py
-
-    # ...
-    # Change this to your data directory
-    RAW_DATA_DIR = DATA_DIR / "raw" 
-    
-    # Update these paths to point to your files
-    GENOTYPE_PATH = RAW_DATA_DIR / "your_genotype_file.csv"
-    PROTEOME_PATH = RAW_DATA_DIR / "your_proteome_file.csv"
-    METABOLITE_PATH = RAW_DATA_DIR / "your_metabolite_file.csv"
-    CLINICAL_PATH = RAW_DATA_DIR / "your_clinical_file.csv"
-    # ...
-    ```
-4.  Run the notebooks sequentially as described above.
-
+```bash
+pytest -q
+```
