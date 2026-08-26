@@ -7,6 +7,4 @@ tqdm>=4.67.1
 captum>=0.7.0
 mofapy2==0.7.4
 joblib>=1.4.2
-statsmodels>=0.14.4
 jupyter>=1.1.1
-pytest>=8.0.0
