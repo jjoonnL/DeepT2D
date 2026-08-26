@@ -159,16 +159,16 @@ def train_with_early_stopping(train_data, validation_data, input_dims, params,
 
 
 def train_fixed_epochs(train_data, input_dims, params, epochs, config_module,
-                       device, seed):
+                       device, seed, shuffle=True, drop_last=True):
     set_deterministic_seed(seed)
     model = build_mic(input_dims, params, config_module).to(device)
     optimizer, scheduler = build_optimizer(model, params, config_module)
     loader = make_loader(
         train_data,
         batch_size=config_module.BATCH_SIZE,
-        shuffle=True,
+        shuffle=shuffle,
         seed=seed,
-        drop_last=True,
+        drop_last=drop_last,
     )
     history = []
 

@@ -41,6 +41,7 @@ def train_runs(processed, config_module, device, output_dir, runs=None):
         model, info = train_fixed_epochs(
             data, dimensions, final_parameters(config_module),
             config_module.EPOCHS, config_module, device, seed,
+            shuffle=False, drop_last=False,
         )
         path = model_dir / f"mic_run_{run:03d}.pth"
         torch.save(model.state_dict(), path)
@@ -54,7 +55,7 @@ def train_runs(processed, config_module, device, output_dir, runs=None):
     return manifest
 
 
-def clinical_subtype_mapping(clinical, clusters):
+def clinical_subtype_mapping(clinical, clusters, allow_fallback=False):
     values = clinical.copy()
     values["mic_cluster"] = clusters
     features = ("HOMA_IR", "hba1c", "bmi", "age_at_diagnosis")
@@ -64,6 +65,8 @@ def clinical_subtype_mapping(clinical, clusters):
     for feature, subtype in zip(features, SUBTYPES):
         cluster = int(means[feature].idxmax())
         if cluster in used:
+            if not allow_fallback:
+                return None
             standardized = (
                 (means[list(features)] - means[list(features)].mean())
                 / means[list(features)].std(ddof=0).replace(0, 1)
@@ -98,6 +101,9 @@ def evaluate_runs(processed, config_module, device, output_dir,
     dimensions = input_dimensions(processed)
     prediction_columns = {}
     run_rows = []
+    allow_mapping_fallback = "sample_data" in Path(
+        config_module.CLINICAL_PATH
+    ).parts
 
     for row in tqdm(
         manifest.itertuples(index=False),
@@ -116,7 +122,9 @@ def evaluate_runs(processed, config_module, device, output_dir,
         aligned = np.asarray([numeric_mapping[int(x)] for x in clusters])
         accuracy = float(np.mean(aligned == true_labels))
         ari = adjusted_rand_score(true_labels, clusters)
-        subtype_mapping = clinical_subtype_mapping(clinical, clusters)
+        subtype_mapping = clinical_subtype_mapping(
+            clinical, clusters, allow_fallback=allow_mapping_fallback
+        )
         valid = subtype_mapping is not None and accuracy >= accuracy_threshold
         if subtype_mapping is not None:
             prediction_columns[f"run_{row.run:03d}"] = pd.Series(clusters).map(subtype_mapping)
