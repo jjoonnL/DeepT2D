@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
+from tqdm.auto import tqdm
 
 from src.evaluation import derive_cluster_mapping
 from src.generalization import input_dimensions, model_data
@@ -34,7 +35,7 @@ def train_runs(processed, config_module, device, output_dir, runs=None):
     dimensions = input_dimensions(processed)
     rows = []
 
-    for run in range(runs):
+    for run in tqdm(range(runs), desc="Training full-cohort models"):
         seed = 100 + run
         model, info = train_fixed_epochs(
             data, dimensions, final_parameters(config_module),
@@ -85,7 +86,11 @@ def evaluate_runs(processed, config_module, device, output_dir,
     prediction_columns = {}
     run_rows = []
 
-    for row in manifest.itertuples(index=False):
+    for row in tqdm(
+        manifest.itertuples(index=False),
+        total=len(manifest),
+        desc="Evaluating full-cohort models",
+    ):
         model = build_mic(dimensions, final_parameters(config_module), config_module).to(device)
         state = torch.load(output_dir / row.model_path, map_location=device, weights_only=True)
         model.load_state_dict(state)

@@ -7,6 +7,7 @@ import torch
 from sklearn.cluster import KMeans
 from sklearn.metrics import accuracy_score, adjusted_rand_score, balanced_accuracy_score
 from sklearn.model_selection import ParameterGrid, StratifiedKFold
+from tqdm.auto import tqdm
 
 from src.evaluation import (
     apply_cluster_mapping,
@@ -103,7 +104,11 @@ def run_inner_search(processed_data, outer_fold, outer_train_idx, config_module,
     rows = []
     params_by_key = {}
 
-    for params in ParameterGrid(grid):
+    for params in tqdm(
+        ParameterGrid(grid),
+        desc=f"Outer fold {outer_fold} grid",
+        leave=False,
+    ):
         key = parameter_key(params)
         params_by_key[key] = dict(params)
         for inner_fold, (train_local, validation_local) in enumerate(splits, 1):

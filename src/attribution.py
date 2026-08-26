@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from scipy.stats import spearmanr
+from tqdm.auto import tqdm
 
 from src.generalization import input_dimensions, model_data
 from src.models import build_mic
@@ -37,7 +38,11 @@ def calculate_ig(model, data, baselines, targets, device, batch_size=64,
         for name in MODALITIES
     )
 
-    for start in range(0, len(targets), batch_size):
+    for start in tqdm(
+        range(0, len(targets), batch_size),
+        desc="Integrated Gradients",
+        leave=False,
+    ):
         stop = min(start + batch_size, len(targets))
         inputs = tuple(data[name][start:stop].to(device) for name in MODALITIES)
         batch_baselines = tuple(
