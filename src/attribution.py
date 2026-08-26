@@ -41,11 +41,7 @@ def calculate_ig(model, data, baselines, targets, device, batch_size=64,
         for name in MODALITIES
     )
 
-    for start in tqdm(
-        range(0, len(targets), batch_size),
-        desc="Integrated Gradients",
-        leave=False,
-    ):
+    for start in range(0, len(targets), batch_size):
         stop = min(start + batch_size, len(targets))
         inputs = tuple(data[name][start:stop].to(device) for name in MODALITIES)
         batch_baselines = tuple(
