@@ -9,12 +9,11 @@ DeepT2D/
 ├── README.md
 ├── notebooks/
 │   ├── 01_data_preprocessing.ipynb
-│   ├── 02_hyperparameter_tuning.ipynb
-│   ├── 03_model_training.ipynb
-│   ├── 04_nested_cross_validation.ipynb
-│   ├── 05_model_comparison.ipynb
-│   ├── 06_evaluation_and_labeling.ipynb
-│   └── 07_feature_analysis.ipynb
+│   ├── 02_model_training.ipynb
+│   ├── 03_nested_cross_validation.ipynb
+│   ├── 04_model_comparison.ipynb
+│   ├── 05_evaluation_and_labeling.ipynb
+│   └── 06_feature_analysis.ipynb
 ├── src/                      model definitions and helper functions
 ├── data/
 │   ├── sample_data/
@@ -50,12 +49,11 @@ DeepT2D/
 The analysis is organized into numbered Jupyter notebooks in the `notebooks/` directory.
 
 1. `01_data_preprocessing.ipynb` prepares the genotype, proteome, metabolite, and clinical data.
-2. `02_hyperparameter_tuning.ipynb` performs model hyperparameter tuning.
-3. `03_model_training.ipynb` trains the full-cohort models.
-4. `04_nested_cross_validation.ipynb` evaluates held-out generalization performance.
-5. `05_model_comparison.ipynb` evaluates the single-omics models and comparator methods.
-6. `06_evaluation_and_labeling.ipynb` evaluates the full-cohort models and derives the final subtype labels.
-7. `07_feature_analysis.ipynb` performs full-cohort and held-out Integrated Gradients analyses.
+2. `02_model_training.ipynb` trains the full-cohort models.
+3. `03_nested_cross_validation.ipynb` evaluates held-out generalization performance, including hyperparameter and training-epoch selection within the inner folds.
+4. `04_model_comparison.ipynb` evaluates the single-omics models and comparator methods.
+5. `05_evaluation_and_labeling.ipynb` evaluates the full-cohort models and derives the final subtype labels.
+6. `06_feature_analysis.ipynb` performs full-cohort and held-out Integrated Gradients analyses.
 
 ### Using the Sample Data
 

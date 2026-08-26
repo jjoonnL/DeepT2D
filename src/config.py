@@ -80,8 +80,7 @@ INTEGRATION_DIMS = [64]         # Hidden layers for the integration block
 LATENT_DIM = 16                 # Dimension of the final latent space
 CLINICAL_OUTPUT_DIM = 5         # Final output dimension (number of clinical variables)
 
-# --- Hyperparameters determined from tuning ---
-# This should be updated based on the results from '02_hyperparameter_tuning.ipynb'
+# --- Hyperparameters used for full-cohort model training ---
 DECODER_DIMS = []               # Hidden layers for the decoder. E.g., [], [32], or [64]
 DROPOUT = 0.1
 WEIGHT_DECAY = 1e-4
