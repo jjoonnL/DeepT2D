@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from scipy.optimize import linear_sum_assignment
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
 from tqdm.auto import tqdm
@@ -63,7 +64,19 @@ def clinical_subtype_mapping(clinical, clusters):
     for feature, subtype in zip(features, SUBTYPES):
         cluster = int(means[feature].idxmax())
         if cluster in used:
-            return None
+            standardized = (
+                (means[list(features)] - means[list(features)].mean())
+                / means[list(features)].std(ddof=0).replace(0, 1)
+            )
+            cluster_rows, subtype_columns = linear_sum_assignment(
+                standardized.to_numpy(), maximize=True
+            )
+            return {
+                int(means.index[cluster_row]): SUBTYPES[subtype_column]
+                for cluster_row, subtype_column in zip(
+                    cluster_rows, subtype_columns
+                )
+            }
         mapping[cluster] = subtype
         used.add(cluster)
     return mapping
