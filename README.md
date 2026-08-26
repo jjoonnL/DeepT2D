@@ -51,7 +51,7 @@ The analysis is organized into numbered Jupyter notebooks in the `notebooks/` di
 2. `02_model_training.ipynb` trains the full-cohort models.
 3. `03_nested_cross_validation.ipynb` evaluates held-out generalization performance, including hyperparameter and training-epoch selection within the inner folds.
 4. `04_evaluation_and_labeling.ipynb` evaluates the full-cohort models and derives the final subtype labels.
-5. `05_feature_analysis.ipynb` performs full-cohort and held-out Integrated Gradients analyses.
+5. `05_feature_analysis.ipynb` performs the full-cohort Integrated Gradients analysis.
 
 ### Using the Sample Data
 
