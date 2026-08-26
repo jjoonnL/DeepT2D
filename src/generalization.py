@@ -217,6 +217,9 @@ def run_outer_fold(processed_data, outer_fold, config_module, device,
         labels[train_idx], train_clusters, CLUSTER_LABELS
     )
     test_predictions = apply_cluster_mapping(test_clusters, mapping)
+    model.centroid.data.copy_(torch.as_tensor(
+        kmeans.cluster_centers_, dtype=torch.float32, device=device
+    ))
     overall, class_rows = calculate_metrics(
         labels[test_idx], test_clusters, test_predictions, CLUSTER_LABELS,
         latent=test_latent,
