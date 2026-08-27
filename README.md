@@ -37,15 +37,18 @@ DeepT2D/
    conda activate deept2d
    ```
 
-3. Install [PyTorch](https://pytorch.org/get-started/locally/) for the relevant compute platform, followed by the remaining dependencies.
+3. Install the required dependencies.
 
    ```bash
    pip install -r requirements.txt
    ```
 
+   For a platform-specific CUDA build of PyTorch, follow the official
+   [PyTorch installation guide](https://pytorch.org/get-started/locally/).
+
 ## How to Run the Analysis
 
-The analysis is organized into numbered Jupyter notebooks in the `notebooks/` directory.
+The analysis is organized into numbered Jupyter notebooks in the `notebooks/` directory. Run Notebook 01 first. The full-cohort workflow then proceeds through Notebooks 02, 04, and 05. Notebook 03 can be run independently after Notebook 01 and performs the more computationally intensive nested cross-validation analysis.
 
 1. `01_data_preprocessing.ipynb` prepares the genotype, proteome, metabolite, and clinical data.
 2. `02_model_training.ipynb` trains the full-cohort models.
@@ -59,4 +62,4 @@ Synthetic sample data are provided in `data/sample_data/` to demonstrate the exp
 
 ### Using Your Own Data
 
-Input files should follow the formats shown in `data/sample_data/`, with consistent participant IDs across all data sources. To use other data, update the input paths in `src/config.py` and run the notebooks in order.
+Input files should follow the formats shown in `data/sample_data/`, with consistent participant IDs across all data sources. Custom input files may be placed in `data/raw/`, which is excluded from version control. Update the input paths and, if needed, the column names in `src/config.py` before running the analysis.

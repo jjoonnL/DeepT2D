@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ===================================================================
 #  DATA PATHS
 # ===================================================================
-# As per the README, raw data should be placed in the `data/raw` directory.
+# Custom input data may be placed in the Git-ignored `data/raw` directory.
 DATA_DIR = BASE_DIR / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
@@ -19,7 +19,7 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 # -------------------------------------------------------------------
 # OPTION 1: USE SAMPLE DATA (DEFAULT)
 # -------------------------------------------------------------------
-# By default, the pipeline uses the anonymized sample data provided in this repository.
+# By default, the pipeline uses the synthetic sample data provided in this repository.
 # These paths are relative to the project root.
 GENOTYPE_PATH = DATA_DIR / "sample_data/genotype.csv"
 PROTEOME_PATH = DATA_DIR / "sample_data/proteome.csv"
@@ -61,7 +61,7 @@ INNER_RANDOM_STATE = 42
 # ===================================================================
 #  OUTPUT PATHS
 # ===================================================================
-# Configure directories to save model weights and figures.
+# Configure directories to save model weights and analysis outputs.
 OUTPUT_DIR = BASE_DIR / "outputs"
 MODEL_SAVE_DIR = OUTPUT_DIR / "models"
 
